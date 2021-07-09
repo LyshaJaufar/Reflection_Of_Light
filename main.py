@@ -4,6 +4,7 @@ from tkinter.filedialog import asksaveasfilename
 import pygame as pg
 import pygame.gfxdraw
 import pygame.freetype
+import math
 
 pg.init()
 pg.freetype.init()
@@ -21,6 +22,11 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 LIGHTGRAY = (200, 200, 200)
 background_color = pg.Color(GREYBLUE)
+
+# Angle of incidence for all the lines
+angle = 50
+angle_in_radians = math.radians(angle)
+slope = (math.tan(angle_in_radians))
 
 
 class Canvas:
@@ -44,6 +50,8 @@ class Canvas:
         self.column = 0
         self.row = 0
         self.totalColumns = 57
+
+        self.incidentRays = []
 
     def createArray(self):
         row = self.dsPos[1]
@@ -70,9 +78,9 @@ class Canvas:
                                 (self.margin + self.tile_size) * (abs(row-i))+self.margin,
                                 self.tile_size,
                                 self.tile_size])
-
+        # Draw mirror on the grid
         pg.draw.line(self.display_canvas, RED, ((self.display_size[0]//2)+1, 1), 
-                    ((self.display_size[0]//2)+1, self.display_size[1]),2)
+                    ((self.display_size[0]/2)+1, self.display_size[1]),2)
 
     def clickCell(self):
         self.clicked = True
@@ -85,6 +93,7 @@ class Canvas:
             if self.grid[self.row][self.column] == 0:
                 self.grid[self.row][self.column] = 1
                 self.grid[self.row][self.totalColumns - self.column] = 2
+                self.incidentRays.append(IncidentRay(x1=self.pos[0], y1=self.pos[1]))
 
             # Removing accidental clicks
             else:
@@ -93,12 +102,25 @@ class Canvas:
         
         print("Click ", self.pos, "Grid cooridnates: ", self.row, self.column)
         self.position[self.pos] = (self.row, self.column)    
+        
 
     def draw(self, window):
         window.blit(self.display_canvas, self.dsPos)
         self.drawGrid()
+        for ray in self.incidentRays:
+            ray.draw(window)
 
-
+c1 = 0
+class IncidentRay():
+    def __init__(self, x1, y1):
+        self.x1 = x1
+        self.y1 = y1
+        self.x2 = c1.dsPos[0] + (c1.display_size[0]/2)
+        self.y2 = ((self.x2 - self.x1) / slope) + self.y1
+  
+    def draw(self, screen):
+        pygame.draw.line(screen, RED, (self.x1, self.y1), (self.x2, self.y2), width=2)
+        
 c1 = Canvas((3840, 2160), (int(SW//1.3), int(SH//1.1)))
 c1.createArray()
 
