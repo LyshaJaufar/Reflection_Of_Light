@@ -22,6 +22,7 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 LIGHTGRAY = (200, 200, 200)
+DARKGRAY = (30, 30, 30)
 background_color = pg.Color(GREYBLUE)
 
 # Angle of incidence for all the lines
@@ -91,13 +92,13 @@ class Canvas:
         self.column = (self.pos[0]//(self.tile_size+self.margin)) - (self.dsPos[0]//(self.tile_size + self.margin))
         self.row = (self.pos[1]//(self.tile_size+self.margin)) - (self.dsPos[1]//(self.tile_size + self.margin) + 1)
 
-        if self.column <= (self.totalColumns//2):
+        if self.column <= (self.totalColumns//2) and self.column > 0 and self.row > 0 and self.row < 38:
             if self.grid[self.row][self.column] == 0:
                 self.grid[self.row][self.column] = 1
                 self.grid[self.row][self.totalColumns - self.column] = 2
                 self.incidentRays.append(IncidentRay(x1=self.pos[0], y1=self.pos[1]))
                 self.reflectedRays.append(ReflectedRay(y1=IncidentRay(x1=self.pos[0], 
-                                        y1=self.pos[1]).y2,x2=self.pos[0], y2=self.pos[1]))
+                                        y1=self.pos[1]).Y2,x2=self.pos[0], y2=self.pos[1]))
 
             # Removing accidental clicks
             else:
@@ -116,6 +117,7 @@ class Canvas:
             for ray in self.reflectedRays:
                 ray.draw(window)
 
+
 c1 = 0
 class IncidentRay():
     def __init__(self, x1, y1):
@@ -123,6 +125,9 @@ class IncidentRay():
         self.y1 = y1
         self.x2 = c1.dsPos[0] + (c1.display_size[0]/2)
         self.y2 = ((self.x2 - self.x1) / slope) + self.y1
+
+        self.Y2 = self.y2
+        self.y2 = self.y2 if (self.y2 < 670) else 670
   
     def draw(self, screen):
         pygame.draw.line(screen, RED, (self.x1, self.y1), (self.x2, self.y2), width=2)
@@ -136,10 +141,14 @@ class ReflectedRay(IncidentRay):
 
         self.y2CoordOfExtendedLine = y2
         self.x2CoordOfExtendedLine = ((slope*-1) * (self.y2CoordOfExtendedLine - self.y1)) + self.x1
+
+        self.y1 = self.y1 if (self.y1 < 670) else 670
+        self.y2 = self.y2 if (self.y2 < 670) else 670
+         
     def draw(self, screen):
         pygame.draw.line(screen, BLUE, (self.x1, self.y1), (self.x2, self.y2), width=2)
-        pygame.draw.line(screen, RED, (self.x1, self.y1), 
-                        (self.x2CoordOfExtendedLine, self.y2CoordOfExtendedLine), width=2)
+        pygame.draw.line(screen, DARKGRAY, (self.x1, self.y1), 
+                        (self.x2CoordOfExtendedLine, self.y2CoordOfExtendedLine), width=1)
 
         
 c1 = Canvas((3840, 2160), (int(SW//1.3), int(SH//1.1)))
