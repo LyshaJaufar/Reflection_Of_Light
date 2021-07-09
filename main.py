@@ -20,6 +20,7 @@ pg.display.set_caption("Reflection of Light")
 GREYBLUE = "#111e42"
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
 LIGHTGRAY = (200, 200, 200)
 background_color = pg.Color(GREYBLUE)
 
@@ -52,6 +53,7 @@ class Canvas:
         self.totalColumns = 57
 
         self.incidentRays = []
+        self.reflectedRays = []
 
     def createArray(self):
         row = self.dsPos[1]
@@ -94,6 +96,8 @@ class Canvas:
                 self.grid[self.row][self.column] = 1
                 self.grid[self.row][self.totalColumns - self.column] = 2
                 self.incidentRays.append(IncidentRay(x1=self.pos[0], y1=self.pos[1]))
+                self.reflectedRays.append(ReflectedRay(y1=IncidentRay(x1=self.pos[0], 
+                                        y1=self.pos[1]).y2,x2=self.pos[0], y2=self.pos[1]))
 
             # Removing accidental clicks
             else:
@@ -109,6 +113,8 @@ class Canvas:
         self.drawGrid()
         for ray in self.incidentRays:
             ray.draw(window)
+            for ray in self.reflectedRays:
+                ray.draw(window)
 
 c1 = 0
 class IncidentRay():
@@ -120,6 +126,21 @@ class IncidentRay():
   
     def draw(self, screen):
         pygame.draw.line(screen, RED, (self.x1, self.y1), (self.x2, self.y2), width=2)
+
+class ReflectedRay(IncidentRay):
+    def __init__(self, y1, x2, y2):
+        self.x1 = c1.dsPos[0] + (c1.display_size[0]/2)
+        self.x2 = x2
+        self.y1 = y1
+        self.y2 = ((self.x2 - self.x1) / (slope * -1)) + self.y1
+
+        self.y2CoordOfExtendedLine = y2
+        self.x2CoordOfExtendedLine = ((slope*-1) * (self.y2CoordOfExtendedLine - self.y1)) + self.x1
+    def draw(self, screen):
+        pygame.draw.line(screen, BLUE, (self.x1, self.y1), (self.x2, self.y2), width=2)
+        pygame.draw.line(screen, RED, (self.x1, self.y1), 
+                        (self.x2CoordOfExtendedLine, self.y2CoordOfExtendedLine), width=2)
+
         
 c1 = Canvas((3840, 2160), (int(SW//1.3), int(SH//1.1)))
 c1.createArray()
