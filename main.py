@@ -18,6 +18,7 @@ pg.display.set_caption("Reflection of Light")
 
 GREYBLUE = "#111e42"
 RED = (255, 0, 0)
+GREEN = (0, 255, 0)
 LIGHTGRAY = (200, 200, 200)
 background_color = pg.Color(GREYBLUE)
 
@@ -34,7 +35,7 @@ class Canvas:
         self.display_canvas = pg.Surface(self.display_size)
 
         self.grid = []
-        self.tile_size = 6  # WIDTH and HEIGHT of each grid location
+        self.tile_size = 15  # WIDTH and HEIGHT of each grid location
         self.margin = 2     # Margin between each cell
 
         self.clicked = False
@@ -42,37 +43,54 @@ class Canvas:
         self.pos = (0,0)
         self.column = 0
         self.row = 0
+        self.totalColumns = 57
 
     def createArray(self):
-        for row in range(c1.display_size[0]):               # Add an empty array that will hold each cell in this row
+        row = self.dsPos[1]
+        column = self.dsPos[0]
+        for i in range(row, c1.display_size[0]):               # Add an empty array that will hold each cell in this row
             self.grid.append([])
-            for column in range(c1.display_size[1]):        # Append a cell in each column of the row
-                self.grid[row].append(0)  
+            for j in range(column, c1.display_size[1]):        # Append a cell in each column of the row
+                self.grid[abs(row-i)].append(0)  
 
     def drawGrid(self):
-        self.createArray()
-        for row in range(c1.display_size[0]):
-            self.row = row
-            for column in range(c1.display_size[1]):
-                self.column = column
+        row = self.dsPos[1]
+        column = self.dsPos[0]
+
+        for i in range(row, c1.display_size[0]):
+            for j in range(column, c1.display_size[1]):
                 color = LIGHTGRAY
-                if self.grid[row][column] == 1:
+                if self.grid[abs(row-i)][abs(column-j)] == 1:
+                    color = GREEN
+                if self.grid[abs(row-i)][abs(column-j)] == 2:
                     color = RED
-                pygame.draw.rect(c1.display_canvas,
+                pygame.draw.rect(self.display_canvas,
                                 color,
-                                [(self.margin + self.tile_size) * column+self.margin,
-                                (self.margin + self.tile_size) * row+self.margin,
+                                [(self.margin + self.tile_size) * (abs(column-j))+self.margin,
+                                (self.margin + self.tile_size) * (abs(row-i))+self.margin,
                                 self.tile_size,
                                 self.tile_size])
+
+        pg.draw.line(self.display_canvas, RED, ((self.display_size[0]//2)+1, 1), 
+                    ((self.display_size[0]//2)+1, self.display_size[1]),2)
 
     def clickCell(self):
         self.clicked = True
         self.pos = pygame.mouse.get_pos()
-        self.column = self.pos[0] // self.display_size[1]-(self.tile_size + self.margin)
-        self.row = self.pos[1] // self.display_size[0] - (self.tile_size + self.margin)
 
-        self.grid[self.row][self.column] = 1
-        self.grid[self.row][-self.column] = 2
+        self.column = (self.pos[0]//(self.tile_size+self.margin)) - (self.dsPos[0]//(self.tile_size + self.margin))
+        self.row = (self.pos[1]//(self.tile_size+self.margin)) - (self.dsPos[1]//(self.tile_size + self.margin) + 1)
+
+        if self.column <= (self.totalColumns//2):
+            if self.grid[self.row][self.column] == 0:
+                self.grid[self.row][self.column] = 1
+                self.grid[self.row][self.totalColumns - self.column] = 2
+
+            # Removing accidental clicks
+            else:
+                self.grid[self.row][self.column] = 0
+                self.grid[self.row][self.totalColumns - self.column] = 0
+        
         print("Click ", self.pos, "Grid cooridnates: ", self.row, self.column)
         self.position[self.pos] = (self.row, self.column)    
 
@@ -81,7 +99,8 @@ class Canvas:
         self.drawGrid()
 
 
-c1 = Canvas((3840, 2160), (int(SW//1.4), int(SH//1.05)))
+c1 = Canvas((3840, 2160), (int(SW//1.3), int(SH//1.1)))
+c1.createArray()
 
 
 run = True
