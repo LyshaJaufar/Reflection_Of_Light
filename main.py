@@ -87,9 +87,6 @@ class Canvas:
                                 (self.margin + self.tile_size) * (abs(row-i))+self.margin,
                                 self.tile_size,
                                 self.tile_size])
-                text_to_screen(window=window, text=str(i), color=RED, 
-                                pos=((self.margin + self.tile_size) * (abs(column-j))+self.margin, 
-                                (self.margin + self.tile_size) * (abs(row-i))+self.margin))
 
         # Draw mirror on the grid
         pg.draw.line(self.display_canvas, RED, ((self.display_size[0]//2)+1, 1), 
@@ -105,6 +102,9 @@ class Canvas:
 
         self.column = (self.pos[0]//(self.tile_size+self.margin)) - (self.dsPos[0]//(self.tile_size + self.margin))
         self.row = (self.pos[1]//(self.tile_size+self.margin)) - (self.dsPos[1]//(self.tile_size + self.margin) + 1)
+
+        if self.column == -1 and self.row == -1:
+            text_to_screen(window=window, text=str(self.column), color=RED, pos=(self.row, self.column))
 
         if self.column <= (self.totalColumns//2) and self.column > 0 and self.row > 0 and self.row < 38:
             if self.grid[self.row][self.column] == 0:
