@@ -41,8 +41,11 @@ class Canvas:
         self.width = size[0]
         self.height = size[1]
         self.display_size = display_size
-        self.sPos = ((SW - self.width) // 2, (SH - self.height) // 2)                   # Position of the screen
-        self.dsPos = ((SW - self.display_size[0])-20, (SH-self.display_size[1])-15)     # Position of the display
+        self.left_margin = 35
+        self.upper_margin = 25
+        self.sPos = ((SW - self.width) // 2, (SH - self.height) // 2)   # Position of the screen
+        self.dsPos = ((SW - self.display_size[0])-self.left_margin, 
+                    (SH-self.display_size[1])-self.upper_margin)        # Position of the display     
         self.canvas = pg.Surface((self.width, self.height))
         self.canvas.fill((255, 255, 255))
         self.display_canvas = pg.Surface(self.display_size)
@@ -70,7 +73,6 @@ class Canvas:
                 self.grid[abs(row-i)].append(0)  
 
     def drawGrid(self):
-        ui_h1_color = (250, 250, 250)
         row = self.dsPos[1]
         column = self.dsPos[0]
 
@@ -97,15 +99,13 @@ class Canvas:
         column_coord_position = self.dsPos[0]
         row_coord_position = self.dsPos[1]
         index = 0
-        Hdistance_from_display = 20
-        Vdistance_from_display = 15
         font_size = 2
-        for i in range(column_coord_position+font_size, SW-Hdistance_from_display, self.tile_size+font_size):       
+        for i in range(column_coord_position+font_size, SW-self.left_margin, self.tile_size+font_size):       
             text_to_screen(window=window, text=str(index), color=RED, pos=(i, self.dsPos[1]-self.tile_size))
             index += 1
 
         index = 0
-        for i in range(row_coord_position+font_size, (SH-Vdistance_from_display), self.tile_size+font_size):
+        for i in range(row_coord_position+font_size, (SH-self.upper_margin), self.tile_size+font_size):
             text_to_screen(window=window, text=str(index), color=RED, pos=(self.dsPos[0]-self.tile_size, i))
             index += 1
 
@@ -175,9 +175,18 @@ class ReflectedRay(IncidentRay):
                         (self.x2CoordOfExtendedLine, self.y2CoordOfExtendedLine), width=1)
 
         
-c1 = Canvas((3840, 2160), (int(SW//1.3), int(SH//1.1)))
+c1 = Canvas((3840, 2160), (int(SW//1.3), int(SH//1.19)))
 c1.createArray()
 
+def generate_ui():
+    ui_manager.clear_and_reset()
+    lm = 60     # Left margin
+
+    random_generate_button = pgui.elements.UIButton(relative_rect=pg.Rect(200, 300, 200, 50),
+                                                    text="Generate Randomly", manager=ui_manager,
+                                                    object_id="random_generate_button")
+
+generate_ui()
 
 run = True
 while run:
