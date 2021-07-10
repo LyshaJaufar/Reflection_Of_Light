@@ -79,7 +79,7 @@ class Canvas:
         for i in range(row, c1.display_size[0]):
             for j in range(column, c1.display_size[1]):
                 color = LIGHTGRAY
-                if self.grid[abs(row-i)][abs(column-j)] == 1 and generate == True:
+                if self.grid[abs(row-i)][abs(column-j)] == 1:
                     color = GREEN
                 if self.grid[abs(row-i)][abs(column-j)] == 2 and generate == True:
                     color = RED
@@ -136,10 +136,11 @@ class Canvas:
     def draw(self, window):
         window.blit(self.display_canvas, self.dsPos)
         self.drawGrid()
-        for ray in self.incidentRays:
-            ray.draw(window)
-            for ray in self.reflectedRays:
+        if generate == True: 
+            for ray in self.incidentRays:
                 ray.draw(window)
+                for ray in self.reflectedRays:
+                    ray.draw(window)
 
 
 c1 = 0
@@ -180,9 +181,9 @@ c1.createArray()
 
 def generate_ui():
     ui_manager.clear_and_reset()
-    lm = 60     # Left margin
+    lm = 30     # Left margin
 
-    random_generate_button = pgui.elements.UIButton(relative_rect=pg.Rect(200, 300, 200, 50),
+    random_generate_button = pgui.elements.UIButton(relative_rect=pg.Rect(lm, 125, 200, 22),
                                                     text="Generate Randomly", manager=ui_manager,
                                                     object_id="random_generate_button")
 
