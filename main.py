@@ -30,6 +30,11 @@ angle = 50
 angle_in_radians = math.radians(angle)
 slope = (math.tan(angle_in_radians))
 
+xs_font = pg.freetype.Font("Basic-Regular.ttf", 12)
+
+def text_to_screen(window, text, color, pos):
+    font_used = xs_font
+    font_used.render_to(window, pos, text, color)
 
 class Canvas:
     def __init__(self, size, display_size):
@@ -65,6 +70,7 @@ class Canvas:
                 self.grid[abs(row-i)].append(0)  
 
     def drawGrid(self):
+        ui_h1_color = (250, 250, 250)
         row = self.dsPos[1]
         column = self.dsPos[0]
 
@@ -81,9 +87,17 @@ class Canvas:
                                 (self.margin + self.tile_size) * (abs(row-i))+self.margin,
                                 self.tile_size,
                                 self.tile_size])
+                text_to_screen(window=window, text=str(i), color=RED, 
+                                pos=((self.margin + self.tile_size) * (abs(column-j))+self.margin, 
+                                (self.margin + self.tile_size) * (abs(row-i))+self.margin))
+
         # Draw mirror on the grid
         pg.draw.line(self.display_canvas, RED, ((self.display_size[0]//2)+1, 1), 
                     ((self.display_size[0]/2)+1, self.display_size[1]),2)
+
+        # Draw coords for the grid
+
+
 
     def clickCell(self):
         self.clicked = True
