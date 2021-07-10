@@ -79,9 +79,9 @@ class Canvas:
         for i in range(row, c1.display_size[0]):
             for j in range(column, c1.display_size[1]):
                 color = LIGHTGRAY
-                if self.grid[abs(row-i)][abs(column-j)] == 1:
+                if self.grid[abs(row-i)][abs(column-j)] == 1 and generate == True:
                     color = GREEN
-                if self.grid[abs(row-i)][abs(column-j)] == 2:
+                if self.grid[abs(row-i)][abs(column-j)] == 2 and generate == True:
                     color = RED
              
                 pygame.draw.rect(self.display_canvas,
@@ -114,7 +114,7 @@ class Canvas:
         self.pos = pygame.mouse.get_pos()
 
         self.column = (self.pos[0]//(self.tile_size+self.margin)) - (self.dsPos[0]//(self.tile_size + self.margin))
-        self.row = (self.pos[1]//(self.tile_size+self.margin)) - (self.dsPos[1]//(self.tile_size + self.margin) + 1)
+        self.row = (self.pos[1]//(self.tile_size+self.margin)) - (self.dsPos[1]//(self.tile_size + self.margin))
 
         if self.column <= (self.totalColumns//2) and self.column >= 0 and self.row >= 0 and self.row < 38:
             if self.grid[self.row][self.column] == 0:
@@ -151,7 +151,7 @@ class IncidentRay():
         self.y2 = ((self.x2 - self.x1) / slope) + self.y1
 
         self.Y2 = self.y2
-        self.y2 = self.y2 if (self.y2 < 670) else 670
+        self.y2 = self.y2 if (self.y2 < 660) else 660
   
     def draw(self, screen):
         pygame.draw.line(screen, RED, (self.x1, self.y1), (self.x2, self.y2), width=2)
@@ -166,8 +166,8 @@ class ReflectedRay(IncidentRay):
         self.y2CoordOfExtendedLine = y2
         self.x2CoordOfExtendedLine = ((slope*-1) * (self.y2CoordOfExtendedLine - self.y1)) + self.x1
 
-        self.y1 = self.y1 if (self.y1 < 670) else 670
-        self.y2 = self.y2 if (self.y2 < 670) else 670
+        self.y1 = self.y1 if (self.y1 < 660) else 660
+        self.y2 = self.y2 if (self.y2 < 660) else 660
          
     def draw(self, screen):
         pygame.draw.line(screen, BLUE, (self.x1, self.y1), (self.x2, self.y2), width=2)
@@ -188,6 +188,7 @@ def generate_ui():
 
 generate_ui()
 
+generate = False
 run = True
 while run:
     delta_time = pg.time.Clock().tick(60)/1000.0
@@ -196,8 +197,14 @@ while run:
             run = False
             break
         
-        elif event.type == pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.MOUSEBUTTONDOWN:
             c1.clickCell()
+
+        if event.type == pg.USEREVENT:
+            if event.user_type == pgui.UI_BUTTON_PRESSED:
+                if event.ui_object_id == "random_generate_button":
+                    generate = True
+
 
         ui_manager.process_events(event)
 
