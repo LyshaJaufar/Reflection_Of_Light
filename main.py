@@ -81,6 +81,7 @@ class Canvas:
                     color = GREEN
                 if self.grid[abs(row-i)][abs(column-j)] == 2:
                     color = RED
+             
                 pygame.draw.rect(self.display_canvas,
                                 color,
                                 [(self.margin + self.tile_size) * (abs(column-j))+self.margin,
@@ -93,8 +94,20 @@ class Canvas:
                     ((self.display_size[0]/2)+1, self.display_size[1]),2)
 
         # Draw coords for the grid
+        column_coord_position = self.dsPos[0]
+        row_coord_position = self.dsPos[1]
+        index = 0
+        Hdistance_from_display = 20
+        Vdistance_from_display = 15
+        font_size = 2
+        for i in range(column_coord_position+font_size, SW-Hdistance_from_display, self.tile_size+font_size):       
+            text_to_screen(window=window, text=str(index), color=RED, pos=(i, self.dsPos[1]-self.tile_size))
+            index += 1
 
-
+        index = 0
+        for i in range(row_coord_position+font_size, (SH-Vdistance_from_display), self.tile_size+font_size):
+            text_to_screen(window=window, text=str(index), color=RED, pos=(self.dsPos[0]-self.tile_size, i))
+            index += 1
 
     def clickCell(self):
         self.clicked = True
@@ -103,10 +116,7 @@ class Canvas:
         self.column = (self.pos[0]//(self.tile_size+self.margin)) - (self.dsPos[0]//(self.tile_size + self.margin))
         self.row = (self.pos[1]//(self.tile_size+self.margin)) - (self.dsPos[1]//(self.tile_size + self.margin) + 1)
 
-        if self.column == -1 and self.row == -1:
-            text_to_screen(window=window, text=str(self.column), color=RED, pos=(self.row, self.column))
-
-        if self.column <= (self.totalColumns//2) and self.column > 0 and self.row > 0 and self.row < 38:
+        if self.column <= (self.totalColumns//2) and self.column >= 0 and self.row >= 0 and self.row < 38:
             if self.grid[self.row][self.column] == 0:
                 self.grid[self.row][self.column] = 1
                 self.grid[self.row][self.totalColumns - self.column] = 2
