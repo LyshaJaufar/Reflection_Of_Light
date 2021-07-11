@@ -211,10 +211,16 @@ while run:
         if event.type == pygame.MOUSEBUTTONDOWN:
             c1.clickCell()
 
+            mouse =  pygame.mouse.get_pos()
+            if text.area[0][0] <= mouse[0] <= text.area[0][0]+text.area[1][0] and text.area[0][1] <= mouse[1] <= text.area[0][1]+text.area[1][1]:
+                print("hello")
+
         if event.type == pg.USEREVENT:
             if event.user_type == pgui.UI_BUTTON_PRESSED:
                 if event.ui_object_id == "generate_button":
                     generate = True
+
+
 
 
         ui_manager.process_events(event)
