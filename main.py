@@ -5,6 +5,7 @@ import pygame as pg
 import pygame.gfxdraw
 import pygame.freetype
 import math
+from interface import Textbox
 
 pg.init()
 pg.freetype.init()
@@ -129,7 +130,6 @@ class Canvas:
                 self.grid[self.row][self.column] = 0
                 self.grid[self.row][self.totalColumns - self.column] = 0
         
-        print("Click ", self.pos, "Grid cooridnates: ", self.row, self.column)
         self.position[self.pos] = (self.row, self.column)    
         
 
