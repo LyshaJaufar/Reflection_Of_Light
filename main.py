@@ -5,7 +5,6 @@ import pygame as pg
 import pygame.gfxdraw
 import pygame.freetype
 import math
-from interface import *
 
 pg.init()
 pg.freetype.init()
@@ -32,13 +31,9 @@ angle_in_radians = math.radians(angle)
 slope = (math.tan(angle_in_radians))
 
 xs_font = pg.freetype.Font("Basic-Regular.ttf", 12)
-large_font = pg.freetype.Font("Basic-Regular.ttf", 40)
 
-fonts = [xs_font, large_font]
-font_sizes = [12, 40]
-
-def text_to_screen(window, text, color, pos, font_size):
-    font_used = fonts[font_sizes.index(font_size)]
+def text_to_screen(window, text, color, pos):
+    font_used = xs_font
     font_used.render_to(window, pos, text, color)
 
 class Canvas:
@@ -106,15 +101,13 @@ class Canvas:
         index = 0
         font_size = 2
         for i in range(column_coord_position+font_size, SW-self.left_margin, self.tile_size+font_size):       
-            text_to_screen(window=window, text=str(index), color=RED, pos=(i, self.dsPos[1]-self.tile_size), font_size=12)
+            text_to_screen(window=window, text=str(index), color=RED, pos=(i, self.dsPos[1]-self.tile_size))
             index += 1
 
         index = 0
         for i in range(row_coord_position+font_size, (SH-self.upper_margin), self.tile_size+font_size):
-            text_to_screen(window=window, text=str(index), color=RED, pos=(self.dsPos[0]-self.tile_size, i), font_size=12)
+            text_to_screen(window=window, text=str(index), color=RED, pos=(self.dsPos[0]-self.tile_size, i))
             index += 1
-
-        text_to_screen(window=window, text="REFLECTION OF LIGHT", color=RED, pos=(575, 25), font_size=40)
 
     def clickCell(self):
         self.clicked = True
@@ -192,12 +185,7 @@ def generate_ui():
 
     random_generate_button = pgui.elements.UIButton(relative_rect=pg.Rect(lm, 125, 200, 50),
                                                     text="Generate", manager=ui_manager,
-                                                    object_id="random_generate_button")
-
-    current_palette_dropdown = pgui.elements.UIDropDownMenu(options_list=list(),
-                                                            starting_option="current_palette_name",
-                                                            relative_rect=pg.Rect(lm, 125, 200, 22), manager=ui_manager,
-                                                            object_id="current_palette_dropdown")
+                                                    object_id="generate_button")
 
 generate_ui()
 
@@ -215,7 +203,7 @@ while run:
 
         if event.type == pg.USEREVENT:
             if event.user_type == pgui.UI_BUTTON_PRESSED:
-                if event.ui_object_id == "random_generate_button":
+                if event.ui_object_id == "generate_button":
                     generate = True
 
 
