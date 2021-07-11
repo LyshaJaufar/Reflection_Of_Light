@@ -187,6 +187,8 @@ def generate_ui():
                                                     text="Generate", manager=ui_manager,
                                                     object_id="generate_button")
 
+text = Textbox(area=((30, 225), (200, 50)), border_size=2, spacing=1, max_length=15)
+
 generate_ui()
 
 generate = False
@@ -212,6 +214,7 @@ while run:
     ui_manager.update(delta_time)
     window.fill(background_color)
     c1.draw(window)
+    text.draw(window)
     ui_manager.draw_ui(window)
 
     pg.display.update()

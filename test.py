@@ -194,11 +194,6 @@ def generate_ui():
                                                     text="Generate", manager=ui_manager,
                                                     object_id="random_generate_button")
 
-    current_palette_dropdown = pgui.elements.UIDropDownMenu(options_list=list(),
-                                                            starting_option="current_palette_name",
-                                                            relative_rect=pg.Rect(lm, 125, 200, 22), manager=ui_manager,
-                                                            object_id="current_palette_dropdown")
-
 generate_ui()
 
 generate = False
