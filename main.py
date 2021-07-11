@@ -32,9 +32,14 @@ angle_in_radians = math.radians(angle)
 slope = (math.tan(angle_in_radians))
 
 xs_font = pg.freetype.Font("Basic-Regular.ttf", 12)
+mid_font = pg.freetype.Font("Basic-Regular.ttf", 18)
+large_font = pg.freetype.Font("Basic-Regular.ttf", 40)
 
-def text_to_screen(window, text, color, pos):
-    font_used = xs_font
+fonts = [xs_font, mid_font, large_font]
+font_sizes = [12, 18, 40]
+
+def text_to_screen(window, text, color, pos, font_size=12):
+    font_used = fonts[font_sizes.index(font_size)]
     font_used.render_to(window, pos, text, color)
 
 class Canvas:
@@ -109,6 +114,9 @@ class Canvas:
         for i in range(row_coord_position+font_size, (SH-self.upper_margin), self.tile_size+font_size):
             text_to_screen(window=window, text=str(index), color=RED, pos=(self.dsPos[0]-self.tile_size, i))
             index += 1
+
+        text_to_screen(window=window, text="REFLECTION OF LIGHT", color=RED, pos=(575, 25), font_size=40)
+        text_to_screen(window=window, text="ANGLE OF INCIDENCE", color=RED, pos=(50, 210), font_size=18)
 
     def clickCell(self):
         self.clicked = True
@@ -187,7 +195,7 @@ def generate_ui():
                                                     text="Generate", manager=ui_manager,
                                                     object_id="generate_button")
 
-text = Textbox(area=((30, 225), (200, 50)), border_size=2, spacing=1, max_length=15)
+text = Textbox(area=((30, 235), (200, 50)), border_size=2, spacing=1, max_length=15)
 
 generate_ui()
 
