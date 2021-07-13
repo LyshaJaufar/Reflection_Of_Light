@@ -5,7 +5,7 @@ import pygame as pg
 import pygame.gfxdraw
 import pygame.freetype
 import math
-from interface import Textbox
+
 
 pg.init()
 pg.freetype.init()
@@ -195,8 +195,6 @@ def generate_ui():
                                                     text="Generate", manager=ui_manager,
                                                     object_id="generate_button")
 
-text = Textbox(area=((30, 235), (200, 50)), border_size=2, spacing=1, max_length=15)
-
 generate_ui()
 
 generate = False
@@ -211,24 +209,25 @@ while run:
         if event.type == pygame.MOUSEBUTTONDOWN:
             c1.clickCell()
 
+            """
             mouse =  pygame.mouse.get_pos()
-            if text.area[0][0] <= mouse[0] <= text.area[0][0]+text.area[1][0] and text.area[0][1] <= mouse[1] <= text.area[0][1]+text.area[1][1]:
+            if text.area[0][0] <= mouse[0] <= text.area[0][0]+text.area[1][0] and\
+            text.area[0][1] <= mouse[1] <= text.area[0][1]+text.area[1][1]:
                 print("hello")
+                main_textbox_list[0].active = True"""
+
 
         if event.type == pg.USEREVENT:
             if event.user_type == pgui.UI_BUTTON_PRESSED:
                 if event.ui_object_id == "generate_button":
                     generate = True
 
-
-
-
         ui_manager.process_events(event)
 
+        
     ui_manager.update(delta_time)
     window.fill(background_color)
     c1.draw(window)
-    text.draw(window)
     ui_manager.draw_ui(window)
 
     pg.display.update()

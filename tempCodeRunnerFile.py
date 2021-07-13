@@ -1,1 +1,1 @@
-Reflection
+text = Textbox(action="angleOfIncidence",area=((30, 235), (200, 50)), border_size=2, spacing=1, max_length=15)
