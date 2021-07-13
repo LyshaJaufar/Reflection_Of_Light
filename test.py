@@ -62,5 +62,3 @@ def perform_action(text, action):
                 strX = "89"
         change_textbox(text, str(int(strX)))
         # settings.text_location = star_map.coerce_to_center(int(strX),int(strY))
-
-
