@@ -17,6 +17,7 @@ pg.display.set_caption("Reflection of Light")
 
 #logo = pg.image.load("assets/logo.png")
 #pg.display.set_icon(logo)
+angleInputted = False
 
 GREYBLUE = "#111e42"
 RED = (255, 0, 0)
@@ -26,10 +27,7 @@ LIGHTGRAY = (200, 200, 200)
 DARKGRAY = (30, 30, 30)
 background_color = pg.Color(GREYBLUE)
 
-# Angle of incidence for all the lines
-angle = 50
-angle_in_radians = math.radians(angle)
-slope = (math.tan(angle_in_radians))
+
 
 xs_font = pg.freetype.Font("Basic-Regular.ttf", 12)
 mid_font = pg.freetype.Font("Basic-Regular.ttf", 18)
@@ -197,6 +195,7 @@ def generate_ui():
 
 def updateAngle(angle):
     loop = True
+    angle.text = ""
     while loop:
         e = pygame.event.wait()
         while e.type != pygame.KEYDOWN:
@@ -210,6 +209,8 @@ def updateAngle(angle):
             angle.text +=  str(e.key-48)
 
         if e.key == pygame.K_RETURN:
+            if int(angle.text) > 89:
+                angle.text = 89
             angle.active = False
             loop = False
             return angle.text
@@ -239,7 +240,12 @@ while run:
                 angle = updateAngle(text)
                 print(angle)
 
-            c1.clickCell()
+                # Angle of incidence for all the lines
+                angle_in_radians = math.radians(int(angle))
+                slope = (math.tan(angle_in_radians))
+                angleInputted = True
+            if angleInputted:
+                c1.clickCell()
 
 
         if event.type == pg.USEREVENT:
