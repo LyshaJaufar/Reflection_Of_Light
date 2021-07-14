@@ -194,6 +194,7 @@ def generate_ui():
                                                     object_id="generate_button")
 
 def updateAngle(angle):
+    post = (30, 240)
     loop = True
     angle.text = ""
     while loop:
@@ -207,6 +208,8 @@ def updateAngle(angle):
         or e.key == pygame.K_4 or e.key == pygame.K_5 or e.key == pygame.K_6 or e.key == pygame.K_7\
         or e.key == pygame.K_8 or e.key == pygame.K_9:
             angle.text +=  str(e.key-48)
+            mid_font.render_to(window, (post[0]+10, post[1]), angle.text, (0,0,0))
+            print(post)
 
         if e.key == pygame.K_RETURN:
             if int(angle.text) > 89:
@@ -235,7 +238,6 @@ while run:
             mouse =  pygame.mouse.get_pos()
             if text.area[0][0] <= mouse[0] <= text.area[0][0]+text.area[1][0] and\
             text.area[0][1] <= mouse[1] <= text.area[0][1]+text.area[1][1]:
-                print("hello")
                 text.active = True
                 angle = updateAngle(text)
                 print(angle)
