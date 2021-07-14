@@ -72,93 +72,24 @@ class TextInput:
         self.clock = pygame.time.Clock()
 
     def update(self, events):
-        for event in events:
-            if event.type == pygame.KEYDOWN:
-                '''
-                self.cursor_visible = True  # So the user sees where he writes
-                '''
-                '''
-                # If none exist, create counter for that key:
-                if event.key not in self.keyrepeat_counters:
-                    if not (event.key == pl.K_RETURN or event.key == 271):
-                        self.keyrepeat_counters[event.key] = [0, event.unicode]
-                '''
-                if event.key == pl.K_BACKSPACE:
-                    self.input_string = (
-                        self.input_string[:max(self.cursor_position - 1, 0)]
-                        + self.input_string[self.cursor_position:]
-                    )
+        e = pygame.event.wait()
+        while e.type != pygame.KEYDOWN:
+            e = pygame.event.wait()
+            if e.type == pygame.QUIT:
+                return pygame.K_ESCAPE
 
-                    # Subtract one from cursor_pos, but do not go below zero:
-                    self.cursor_position = max(self.cursor_position - 1, 0)
-                elif event.key == pl.K_DELETE:
-                    self.input_string = (
-                        self.input_string[:self.cursor_position]
-                        + self.input_string[self.cursor_position + 1:]
-                    )
+        current = ""
+        if e.key == pygame.K_0 or e.key == pygame.K_1 or e.key == pygame.K_2 or e.key == pygame.K_3\
+        or e.key == pygame.K_4 or e.key == pygame.K_5 or e.key == pygame.K_6 or e.key == pygame.K_7\
+        or e.key == pygame.K_8 or e.key == pygame.K_9:
+            current =  e.key-48
 
-                elif event.key == pl.K_RETURN or event.key == 271:
-                    return True
-
-                elif event.key == pl.K_RIGHT:
-                    # Add one to cursor_pos, but do not exceed len(input_string)
-                    self.cursor_position = min(self.cursor_position + 1, len(self.input_string))
-
-                elif event.key == pl.K_LEFT:
-                    # Subtract one from cursor_pos, but do not go below zero:
-                    self.cursor_position = max(self.cursor_position - 1, 0)
-
-                elif event.key == pl.K_END:
-                    self.cursor_position = len(self.input_string)
-
-                elif event.key == pl.K_HOME:
-                    self.cursor_position = 0
-
-                elif len(self.input_string) < self.max_string_length or self.max_string_length == -1:
-                    # If no special key is pressed, add unicode of key to input_string
-                    self.input_string = (
-                        self.input_string[:self.cursor_position]
-                        + event.unicode
-                        + self.input_string[self.cursor_position:]
-                    )
-                    self.cursor_position += len(event.unicode)  # Some are empty, e.g. K_UP
-            '''
-            elif event.type == pl.KEYUP:
-                # *** Because KEYUP doesn't include event.unicode, this dict is stored in such a weird way
-                if event.key in self.keyrepeat_counters:
-                    del self.keyrepeat_counters[event.key]
-
-        # Update key counters:
-        for key in self.keyrepeat_counters:
-            self.keyrepeat_counters[key][0] += self.clock.get_time()  # Update clock
-
-            # Generate new key events if enough time has passed:
-            if self.keyrepeat_counters[key][0] >= self.keyrepeat_intial_interval_ms:
-                self.keyrepeat_counters[key][0] = (
-                    self.keyrepeat_intial_interval_ms
-                    - self.keyrepeat_interval_ms
-                )
-
-                event_key, event_unicode = key, self.keyrepeat_counters[key][1]
-                pygame.event.post(pygame.event.Event(pl.KEYDOWN, key=event_key, unicode=event_unicode))
-            '''
-        # Re-render text surface:
-        self.surface = self.font_object.render(self.input_string, self.antialias, self.text_color)
-        '''
-        # Update self.cursor_visible
-        self.cursor_ms_counter += self.clock.get_time()
-        if self.cursor_ms_counter >= self.cursor_switch_ms:
-            self.cursor_ms_counter %= self.cursor_switch_ms
-            self.cursor_visible = not self.cursor_visible
-
-        if self.cursor_visible:
-            cursor_y_pos = self.font_object.size(self.input_string[:self.cursor_position])[0]
-            # Without this, the cursor is invisible when self.cursor_position > 0:
-            if self.cursor_position > 0:
-                cursor_y_pos -= self.cursor_surface.get_width()
-            self.surface.blit(self.cursor_surface, (cursor_y_pos, 0))
-        '''
-        self.clock.tick()
+        self.text_object += str(current)
+        if e.key == pygame.K_RETURN:
+            print(self.text_object)
+            self.text_object = ""
+        #print(self.text_object)
+        return e.key
         return False
 
     def get_surface(self):

@@ -1,12 +1,14 @@
 import pygame
 import random
+from pygame_textinput import TextInput
 pygame.init()
 
 class Textbox:
     def __init__(self, max_length = -1, action = "",\
                 display_text_color = (0, 0, 0), border_size = 1, border_color = (0, 0, 0),\
                 color = (255, 255, 255), area = ((0, 0), (0, 0)), spacing=0):
-        self.text_object = ""
+        self.text_object = TextInput(text_color=display_text_color, max_string_length=max_length, font_size=22)
+        self.text = ""
         self.max_length = max_length
         self.action = action
         self.border_size = border_size
@@ -29,13 +31,16 @@ class Textbox:
         or e.key == pygame.K_4 or e.key == pygame.K_5 or e.key == pygame.K_6 or e.key == pygame.K_7\
         or e.key == pygame.K_8 or e.key == pygame.K_9:
             current =  e.key-48
+            print('here')
 
-        self.text_object += str(current)
+        self.text += str(current)
+        print('also here')
         if e.key == pygame.K_RETURN:
-            print(self.text_object)
-            self.text_object = ""
+            print("success")
+            self.active = False
+            return self.text
         #print(self.text_object)
-        return e.key
+ 
 
 
 
@@ -77,29 +82,7 @@ def perform_action(text, action):
 
 text = Textbox(action="angleOfIncidence",area=((30, 235), (200, 50)), border_size=2, spacing=1, max_length=15)
 
-# show the pygame window
-pygame.init()
-screen = pygame.display.set_mode((400,300))
-pygame.display.set_caption("Pygame Example")
 
-# loop around until the user presses escape or Q
-looping = True
-while looping:
-    # choose a random colour
-    red = random.randint(0, 255)
-    green = random.randint(0, 255)
-    blue = random.randint(0, 255)
-
-    # fill the screen in the random colour
-    screen.fill((red, green, blue))
-    pygame.display.flip()
-
-    # wait for a key to be pressed
-    key = text.update()
-
-    # stop looping if the user presses Q or escape
-    if key == pygame.K_q or key == pygame.K_ESCAPE:
-        looping = False
 
 
 pygame.quit()

@@ -195,6 +195,27 @@ def generate_ui():
                                                     text="Generate", manager=ui_manager,
                                                     object_id="generate_button")
 
+def updateAngle(angle):
+    loop = True
+    while loop:
+        e = pygame.event.wait()
+        while e.type != pygame.KEYDOWN:
+            e = pygame.event.wait()
+            if e.type == pygame.QUIT:
+                return pygame.K_ESCAPE
+
+        if e.key == pygame.K_0 or e.key == pygame.K_1 or e.key == pygame.K_2 or e.key == pygame.K_3\
+        or e.key == pygame.K_4 or e.key == pygame.K_5 or e.key == pygame.K_6 or e.key == pygame.K_7\
+        or e.key == pygame.K_8 or e.key == pygame.K_9:
+            angle.text +=  str(e.key-48)
+
+        if e.key == pygame.K_RETURN:
+            angle.active = False
+            loop = False
+            return angle.text
+
+
+
 text = Textbox(action="angleOfIncidence",area=((30, 235), (200, 50)), border_size=2, spacing=1, max_length=15)
 
 generate_ui()
@@ -210,10 +231,15 @@ while run:
             break
         
         if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse =  pygame.mouse.get_pos()
+            if text.area[0][0] <= mouse[0] <= text.area[0][0]+text.area[1][0] and\
+            text.area[0][1] <= mouse[1] <= text.area[0][1]+text.area[1][1]:
+                print("hello")
+                text.active = True
+                angle = updateAngle(text)
+                print(angle)
+
             c1.clickCell()
-
-
-
 
 
         if event.type == pg.USEREVENT:
