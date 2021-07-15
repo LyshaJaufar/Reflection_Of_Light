@@ -19,7 +19,7 @@ class Textbox:
         self.spacing = spacing
         self.active = False
 
-        
+
     def draw(self, main_surface):
         pygame.draw.rect(main_surface, self.border_color, self.area)
         new_area = ((self.area[0][0] + self.border_size, self.area[0][1] + self.border_size),\
@@ -29,35 +29,5 @@ class Textbox:
         text_surf = self.text_object.get_surface()
         new_spot = (new_area[0][0] + self.spacing, new_area[0][1] + ((new_area[1][1] - text_surf.get_height()) / 2))
         main_surface.blit(text_surf, new_spot)
-
-
-
-
-def perform_action(text, action):
-    if action == "angleOfIncidence":
-        strX = ""
-        posX = text.text_object.input_string
-        print("test", posX)
-
-        for char in posX:
-            if char.isdigit() or char == "-":
-                strX += char
-        if not strX:
-            strX = "-69"
-        # change_textbox(text, str(int(strX)))
-        if abs(int(strX)) > 90:
-            if int(strX) < 0:
-                strX = "-89"
-            else:
-                strX = "89"
-        # change_textbox(text, str(int(strX)))
-        # settings.text_location = star_map.coerce_to_center(int(strX),int(strY))
-
-
-
-text = Textbox(action="angleOfIncidence",area=((30, 235), (200, 50)), border_size=2, spacing=1, max_length=15)
-
-
-
 
 pygame.quit()

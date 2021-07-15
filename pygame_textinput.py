@@ -73,7 +73,6 @@ class TextInput:
 
     def update(self, current):
         self.surface = self.font_object.render(current, self.antialias, self.text_color)
-        print("updated")
 
     def get_surface(self):
         return self.surface

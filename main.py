@@ -68,33 +68,42 @@ class Canvas:
 
         self.incidentRays = []
         self.reflectedRays = []
+        self.finalIncidentRays = []
+        self.finalReflectedRays = []
+        self.generate = False
 
     def createArray(self):
         row = self.dsPos[1]
         column = self.dsPos[0]
-        for i in range(row, c1.display_size[0]):               # Add an empty array that will hold each cell in this row
+        for i in range(row, self.display_size[0]):               # Add an empty array that will hold each cell in this row
             self.grid.append([])
-            for j in range(column, c1.display_size[1]):        # Append a cell in each column of the row
+            for j in range(column, self.display_size[1]):        # Append a cell in each column of the row
                 self.grid[abs(row-i)].append(0)  
 
     def drawGrid(self):
         row = self.dsPos[1]
         column = self.dsPos[0]
 
-        for i in range(row, c1.display_size[0]):
-            for j in range(column, c1.display_size[1]):
+
+        for i in range(row, self.display_size[0]):
+            for j in range(column, self.display_size[1]):
                 color = LIGHTGRAY
                 if self.grid[abs(row-i)][abs(column-j)] == 1:
                     color = GREEN
-                if self.grid[abs(row-i)][abs(column-j)] == 2 and generate == True:
+                if self.grid[abs(row-i)][abs(column-j)] == 2 and self.generate == True:
                     color = RED
-             
+                    self.grid[abs(row-i)][abs(column-j)] = 3
+                if self.grid[abs(row-i)][abs(column-j)] == 3:
+                    color = RED
+      
                 pygame.draw.rect(self.display_canvas,
                                 color,
                                 [(self.margin + self.tile_size) * (abs(column-j))+self.margin,
                                 (self.margin + self.tile_size) * (abs(row-i))+self.margin,
                                 self.tile_size,
                                 self.tile_size])
+
+
 
         # Draw mirror on the grid
         pg.draw.line(self.display_canvas, RED, ((self.display_size[0]//2)+1, 1), 
@@ -140,15 +149,23 @@ class Canvas:
         self.position[self.pos] = (self.row, self.column)    
         
 
-    def draw(self, window):
+    def initialDraw(self, window):
         window.blit(self.display_canvas, self.dsPos)
         self.drawGrid()
-        if generate == True: 
+        if self.generate == True: 
             for ray in self.incidentRays:
                 ray.draw(window)
+                self.finalIncidentRays.append(ray)
                 for ray in self.reflectedRays:
                     ray.draw(window)
+                    self.finalReflectedRays.append(ray)
+        self.generate = False
 
+    def draw(self, window):
+        for ray in self.finalIncidentRays:
+            ray.draw(window)
+            for ray in self.finalReflectedRays:
+                ray.draw(window)
 
 c1 = 0
 class IncidentRay():
@@ -214,7 +231,7 @@ def updateAngle(angle):
 
             if e.key != pygame.K_BACKSPACE and e.key != pygame.K_DELETE and e.key != pygame.K_RETURN:
                 angle.text +=  str(e.key-48)
-                text.text_object.update(angle.text)
+                text.text_object.update(angle.text)                
 
         if e.key == pygame.K_RETURN:
             if int(angle.text) > 89:
@@ -222,7 +239,7 @@ def updateAngle(angle):
             angle.active = False
             loop = False
             return angle.text
-
+    
 
 textbox = Textbox(action="angleOfIncidence",area=((30, 235), (200, 50)), border_size=2, spacing=1, max_length=15)
 text = Textbox(action="angleOfIncidence",area=((112, 245), (50, 35)), border_size=0, spacing=1, max_length=15)
@@ -244,12 +261,12 @@ while run:
             textbox.area[0][1] <= mouse[1] <= textbox.area[0][1]+textbox.area[1][1]:
                 text.active = True
                 angle = updateAngle(text)
-                print("current: ", angle)
 
                 # Angle of incidence for all the lines
                 angle_in_radians = math.radians(int(angle))
                 slope = (math.tan(angle_in_radians))
                 angleInputted = True
+
             if angleInputted:
                 c1.clickCell()
 
@@ -258,16 +275,19 @@ while run:
             if event.user_type == pgui.UI_BUTTON_PRESSED:
                 if event.ui_object_id == "generate_button":
                     generate = True
+                    c1.generate = True
 
         ui_manager.process_events(event)
 
         
     ui_manager.update(delta_time)
     window.fill(background_color)
+    c1.initialDraw(window)
     c1.draw(window)
     textbox.draw(window)
     text.draw(window)
     ui_manager.draw_ui(window)
+
 
     pg.display.update()
 
