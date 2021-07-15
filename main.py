@@ -92,7 +92,7 @@ class Canvas:
                     color = GREEN
                 if self.grid[abs(row-i)][abs(column-j)] == 2 and self.generate == True:
                     color = RED
-                    self.grid[abs(row-i)][abs(column-j)] = 3
+                    self.grid[abs(row-i)][abs(column-j)] = 3            # store previously generated red squares
                 if self.grid[abs(row-i)][abs(column-j)] == 3:
                     color = RED
       
