@@ -31,10 +31,11 @@ background_color = pg.Color(GREYBLUE)
 
 xs_font = pg.freetype.Font("Basic-Regular.ttf", 12)
 mid_font = pg.freetype.Font("Basic-Regular.ttf", 18)
+big_font = pg.freetype.Font("Basic-Regular.ttf", 35)
 large_font = pg.freetype.Font("Basic-Regular.ttf", 40)
 
-fonts = [xs_font, mid_font, large_font]
-font_sizes = [12, 18, 40]
+fonts = [xs_font, mid_font, big_font, large_font]
+font_sizes = [12, 18, 35, 40]
 
 def text_to_screen(window, text, color, pos, font_size=12):
     font_used = fonts[font_sizes.index(font_size)]
@@ -194,10 +195,10 @@ def generate_ui():
                                                     object_id="generate_button")
 
 def updateAngle(angle):
-    post = (30, 240)
     loop = True
     angle.text = ""
     while loop:
+
         e = pygame.event.wait()
         while e.type != pygame.KEYDOWN:
             e = pygame.event.wait()
@@ -206,10 +207,14 @@ def updateAngle(angle):
 
         if e.key == pygame.K_0 or e.key == pygame.K_1 or e.key == pygame.K_2 or e.key == pygame.K_3\
         or e.key == pygame.K_4 or e.key == pygame.K_5 or e.key == pygame.K_6 or e.key == pygame.K_7\
-        or e.key == pygame.K_8 or e.key == pygame.K_9:
-            angle.text +=  str(e.key-48)
-            mid_font.render_to(window, (post[0]+10, post[1]), angle.text, (0,0,0))
-            print(post)
+        or e.key == pygame.K_8 or e.key == pygame.K_9 or e.key == pygame.K_BACKSPACE or pygame.K_DELETE:
+            if e.key == pygame.K_BACKSPACE or e.key == pygame.K_DELETE:
+                if len(angle.text) > 0:
+                    angle.text = angle.text.rstrip(angle.text[-1])
+
+            if e.key != pygame.K_BACKSPACE and e.key != pygame.K_DELETE and e.key != pygame.K_RETURN:
+                angle.text +=  str(e.key-48)
+                text.text_object.update(angle.text)
 
         if e.key == pygame.K_RETURN:
             if int(angle.text) > 89:
@@ -219,9 +224,8 @@ def updateAngle(angle):
             return angle.text
 
 
-
-text = Textbox(action="angleOfIncidence",area=((30, 235), (200, 50)), border_size=2, spacing=1, max_length=15)
-
+textbox = Textbox(action="angleOfIncidence",area=((30, 235), (200, 50)), border_size=2, spacing=1, max_length=15)
+text = Textbox(action="angleOfIncidence",area=((112, 245), (50, 35)), border_size=0, spacing=1, max_length=15)
 generate_ui()
 
 
@@ -236,11 +240,11 @@ while run:
         
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse =  pygame.mouse.get_pos()
-            if text.area[0][0] <= mouse[0] <= text.area[0][0]+text.area[1][0] and\
-            text.area[0][1] <= mouse[1] <= text.area[0][1]+text.area[1][1]:
+            if textbox.area[0][0] <= mouse[0] <= textbox.area[0][0]+textbox.area[1][0] and\
+            textbox.area[0][1] <= mouse[1] <= textbox.area[0][1]+textbox.area[1][1]:
                 text.active = True
                 angle = updateAngle(text)
-                print(angle)
+                print("current: ", angle)
 
                 # Angle of incidence for all the lines
                 angle_in_radians = math.radians(int(angle))
@@ -261,6 +265,7 @@ while run:
     ui_manager.update(delta_time)
     window.fill(background_color)
     c1.draw(window)
+    textbox.draw(window)
     text.draw(window)
     ui_manager.draw_ui(window)
 

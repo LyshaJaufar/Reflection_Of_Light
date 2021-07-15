@@ -50,7 +50,7 @@ class TextInput:
         if not os.path.isfile(font_family):
             font_family = pygame.font.match_font(font_family)
 
-        self.font_object = pygame.font.Font(font_family, font_size)
+        self.font_object = pygame.font.Font(font_family, 40)
 
         # Text-surface will be created during the first update call:
         self.surface = pygame.Surface((1, 1))
@@ -71,26 +71,9 @@ class TextInput:
 
         self.clock = pygame.time.Clock()
 
-    def update(self, events):
-        e = pygame.event.wait()
-        while e.type != pygame.KEYDOWN:
-            e = pygame.event.wait()
-            if e.type == pygame.QUIT:
-                return pygame.K_ESCAPE
-
-        current = ""
-        if e.key == pygame.K_0 or e.key == pygame.K_1 or e.key == pygame.K_2 or e.key == pygame.K_3\
-        or e.key == pygame.K_4 or e.key == pygame.K_5 or e.key == pygame.K_6 or e.key == pygame.K_7\
-        or e.key == pygame.K_8 or e.key == pygame.K_9:
-            current =  e.key-48
-
-        self.text_object += str(current)
-        if e.key == pygame.K_RETURN:
-            print(self.text_object)
-            self.text_object = ""
-        #print(self.text_object)
-        return e.key
-        return False
+    def update(self, current):
+        self.surface = self.font_object.render(current, self.antialias, self.text_color)
+        print("updated")
 
     def get_surface(self):
         return self.surface

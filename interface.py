@@ -19,32 +19,7 @@ class Textbox:
         self.spacing = spacing
         self.active = False
 
-    def update(self):
-        e = pygame.event.wait()
-        while e.type != pygame.KEYDOWN:
-            e = pygame.event.wait()
-            if e.type == pygame.QUIT:
-                return pygame.K_ESCAPE
-
-        current = ""
-        if e.key == pygame.K_0 or e.key == pygame.K_1 or e.key == pygame.K_2 or e.key == pygame.K_3\
-        or e.key == pygame.K_4 or e.key == pygame.K_5 or e.key == pygame.K_6 or e.key == pygame.K_7\
-        or e.key == pygame.K_8 or e.key == pygame.K_9:
-            current =  e.key-48
-            print('here')
-
-        self.text += str(current)
-        print('also here')
-        if e.key == pygame.K_RETURN:
-            print("success")
-            self.active = False
-            return self.text
-        #print(self.text_object)
- 
-
-
-
-
+        
     def draw(self, main_surface):
         pygame.draw.rect(main_surface, self.border_color, self.area)
         new_area = ((self.area[0][0] + self.border_size, self.area[0][1] + self.border_size),\
