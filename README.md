@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Reflection of Light Simulator
 Generates a simulation of how an object reflects light to create virtual images
 
@@ -14,3 +15,6 @@ Generates a simulation of how an object reflects light to create virtual images
     Virtual image                                    ---> Red
 
 
+=======
+# reflection
+>>>>>>> 12417e0dad9571e4d832acbda505fae90678b383
