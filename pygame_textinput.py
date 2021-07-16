@@ -23,7 +23,7 @@ class TextInput:
             font_family="",
             font_size=35,
             antialias=True,
-            text_color=(0, 0, 0),
+            text_color=(50, 49, 53),
             cursor_color=(0, 0, 1),
             repeat_keys_initial_ms=400,
             repeat_keys_interval_ms=35,

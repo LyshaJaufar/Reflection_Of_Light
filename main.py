@@ -15,20 +15,22 @@ window = pg.display.set_mode((SW, SH))
 ui_manager = pgui.UIManager((SW, SH))
 pg.display.set_caption("Reflection of Light")
 
-#logo = pg.image.load("assets/logo.png")
-#pg.display.set_icon(logo)
 angleInputted = False
 
-GREYBLUE = "#111e42"
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
-LIGHTGRAY = (200, 200, 200)
-DARKGRAY = (30, 30, 30)
-background_color = pg.Color(GREYBLUE)
+# Colours
+DARKBLUE = (22, 25, 44)                 # Background 
+BLUISHGREY = (157, 172, 184)            # Initial Grid
+RED = (163, 30, 49)                     # Text / Headings
+PURPLE = (76, 33, 129)                  # Mirror 
+ORANGE = (235, 44, 44)                  # Incident rays
+BLUE = (21, 103, 237)                   # Reflected rays
+DARKGRAY = (30, 30, 30)                 # Extensions of reflected rays
+BRIGHTRED = (211, 22, 22)               # Image
+GREEN = (0, 192, 50)                    # Object
+background_color = pg.Color(DARKBLUE)
 
 
-
+# Fonts
 xs_font = pg.freetype.Font("Basic-Regular.ttf", 12)
 mid_font = pg.freetype.Font("Basic-Regular.ttf", 18)
 big_font = pg.freetype.Font("Basic-Regular.ttf", 35)
@@ -40,6 +42,7 @@ font_sizes = [12, 18, 35, 40]
 def text_to_screen(window, text, color, pos, font_size=12):
     font_used = fonts[font_sizes.index(font_size)]
     font_used.render_to(window, pos, text, color)
+
 
 class Canvas:
     def __init__(self, size, display_size):
@@ -56,8 +59,8 @@ class Canvas:
         self.display_canvas = pg.Surface(self.display_size)
 
         self.grid = []
-        self.tile_size = 15  # WIDTH and HEIGHT of each grid location
-        self.margin = 2     # Margin between each cell
+        self.tile_size = 15                                             # WIDTH and HEIGHT of each grid location
+        self.margin = 2                                                 # Margin between each cell
 
         self.clicked = False
         self.position = dict()
@@ -84,17 +87,16 @@ class Canvas:
         row = self.dsPos[1]
         column = self.dsPos[0]
 
-
         for i in range(row, self.display_size[0]):
             for j in range(column, self.display_size[1]):
-                color = LIGHTGRAY
+                color = BLUISHGREY
                 if self.grid[abs(row-i)][abs(column-j)] == 1:
                     color = GREEN
                 if self.grid[abs(row-i)][abs(column-j)] == 2 and self.generate == True:
-                    color = RED
+                    color = BRIGHTRED
                     self.grid[abs(row-i)][abs(column-j)] = 3            # store previously generated red squares
                 if self.grid[abs(row-i)][abs(column-j)] == 3:
-                    color = RED
+                    color = BRIGHTRED
       
                 pygame.draw.rect(self.display_canvas,
                                 color,
@@ -103,11 +105,9 @@ class Canvas:
                                 self.tile_size,
                                 self.tile_size])
 
-
-
         # Draw mirror on the grid
-        pg.draw.line(self.display_canvas, RED, ((self.display_size[0]//2)+1, 1), 
-                    ((self.display_size[0]/2)+1, self.display_size[1]),2)
+        pg.draw.line(self.display_canvas, PURPLE, ((self.display_size[0]//2)+1, 1), 
+                    ((self.display_size[0]/2)+1, self.display_size[1]),4)
 
         # Draw coords for the grid
         column_coord_position = self.dsPos[0]
@@ -148,10 +148,10 @@ class Canvas:
         
         self.position[self.pos] = (self.row, self.column)    
         
-
     def initialDraw(self, window):
         window.blit(self.display_canvas, self.dsPos)
         self.drawGrid()
+
         if self.generate == True: 
             for ray in self.incidentRays:
                 ray.draw(window)
@@ -167,6 +167,7 @@ class Canvas:
             for ray in self.finalReflectedRays:
                 ray.draw(window)
 
+
 c1 = 0
 class IncidentRay():
     def __init__(self, x1, y1):
@@ -179,7 +180,8 @@ class IncidentRay():
         self.y2 = self.y2 if (self.y2 < 660) else 660
   
     def draw(self, screen):
-        pygame.draw.line(screen, RED, (self.x1, self.y1), (self.x2, self.y2), width=2)
+        pygame.draw.line(screen, ORANGE, (self.x1, self.y1), (self.x2, self.y2), width=3)
+
 
 class ReflectedRay(IncidentRay):
     def __init__(self, y1, x2, y2):
@@ -195,13 +197,15 @@ class ReflectedRay(IncidentRay):
         self.y2 = self.y2 if (self.y2 < 660) else 660
          
     def draw(self, screen):
-        pygame.draw.line(screen, BLUE, (self.x1, self.y1), (self.x2, self.y2), width=2)
+        pygame.draw.line(screen, BLUE, (self.x1, self.y1), (self.x2, self.y2), width=3)
         pygame.draw.line(screen, DARKGRAY, (self.x1, self.y1), 
-                        (self.x2CoordOfExtendedLine, self.y2CoordOfExtendedLine), width=1)
+                        (self.x2CoordOfExtendedLine, self.y2CoordOfExtendedLine), width=2)
 
         
 c1 = Canvas((3840, 2160), (int(SW//1.3), int(SH//1.19)))
 c1.createArray()
+textbox = Textbox(action="angleOfIncidence",area=((30, 235), (200, 50)), border_size=2, spacing=1, max_length=15)
+text = Textbox(action="angleOfIncidence",area=((112, 245), (50, 35)), border_size=0, spacing=1, max_length=15)
 
 def generate_ui():
     ui_manager.clear_and_reset()
@@ -240,12 +244,7 @@ def updateAngle(angle):
             loop = False
             return angle.text
     
-
-textbox = Textbox(action="angleOfIncidence",area=((30, 235), (200, 50)), border_size=2, spacing=1, max_length=15)
-text = Textbox(action="angleOfIncidence",area=((112, 245), (50, 35)), border_size=0, spacing=1, max_length=15)
 generate_ui()
-
-
 generate = False
 run = True
 while run:
@@ -270,7 +269,6 @@ while run:
             if angleInputted:
                 c1.clickCell()
 
-
         if event.type == pg.USEREVENT:
             if event.user_type == pgui.UI_BUTTON_PRESSED:
                 if event.ui_object_id == "generate_button":
@@ -279,7 +277,6 @@ while run:
 
         ui_manager.process_events(event)
 
-        
     ui_manager.update(delta_time)
     window.fill(background_color)
     c1.initialDraw(window)
@@ -287,7 +284,6 @@ while run:
     textbox.draw(window)
     text.draw(window)
     ui_manager.draw_ui(window)
-
 
     pg.display.update()
 
