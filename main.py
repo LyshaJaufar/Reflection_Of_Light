@@ -200,7 +200,6 @@ class ReflectedRay(IncidentRay):
         pygame.draw.line(screen, BLUE, (self.x1, self.y1), (self.x2, self.y2), width=3)
         pygame.draw.line(screen, DARKGRAY, (self.x1, self.y1), 
                         (self.x2CoordOfExtendedLine, self.y2CoordOfExtendedLine), width=2)
-
         
 c1 = Canvas((3840, 2160), (int(SW//1.3), int(SH//1.19)))
 c1.createArray()
@@ -219,7 +218,6 @@ def updateAngle(angle):
     loop = True
     angle.text = ""
     while loop:
-
         e = pygame.event.wait()
         while e.type != pygame.KEYDOWN:
             e = pygame.event.wait()
@@ -238,13 +236,18 @@ def updateAngle(angle):
                 text.text_object.update(angle.text)                
 
         if e.key == pygame.K_RETURN:
+            if angle.text == "":
+                return 0
             if int(angle.text) > 89:
                 angle.text = 89
             angle.active = False
             loop = False
             return angle.text
     
+
+
 generate_ui()
+
 generate = False
 run = True
 while run:
@@ -262,12 +265,18 @@ while run:
                 angle = updateAngle(text)
 
                 # Angle of incidence for all the lines
+                if angle == 0:
+                    temp = "returned 0"
+                    angle = 1
+                else:
+                    temp = "passes"
                 angle_in_radians = math.radians(int(angle))
                 slope = (math.tan(angle_in_radians))
                 angleInputted = True
 
             if angleInputted:
-                c1.clickCell()
+                if temp != "returned 0":
+                    c1.clickCell()
 
         if event.type == pg.USEREVENT:
             if event.user_type == pgui.UI_BUTTON_PRESSED:
